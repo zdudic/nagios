@@ -1,0 +1,10 @@
+INTRO
+
+There is the DAQ temperature device in a server room, 
+Here is the plugin [check_temp_daq.sh] to query the DAQ and get the temperature.
+
+
+GRAPH
+
+The pnp4nagios is used for graphing and here is the relevant template, 
+most likely located in /usr/share/pnp4nagios/templates and called check_temp_module_daq.php

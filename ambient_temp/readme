@@ -1,0 +1,40 @@
+---------
+INTRO
+---------
+Here is the plug-in that monitors an ambient temperature around machine. 
+The plug-in supports next servers: Sun Enterprise T5240 and SunFire X4200/X4500
+
+Basically, the script uses tool 'ipmitool' and connect to ILOM of supported systems. 
+In my case, ILOM interface has name hostname.alom or hostname-alom, so script is also checking this. 
+Another thing, the file .passwd.alom contains ILOM's password.
+
+----------------------------
+MACHINE YOU MONITOR
+----------------------------
+
+On machine, you need nrpe.cfg to read:
+
+# plugin for ambient temperature
+command[check_amb_temp]=/your-path/amb_temp.sh $ARG1$
+
+-----------------------
+NAGIOS SERVER
+-----------------------
+
+Define service and service group, example:
+
+define servicegroup{
+  servicegroup_name       amb_temp
+  alias                   Ambient Temperature
+   }
+
+define service{
+        use                             gen-service         ; Name of service template to use
+        host_name                       your-servers
+        servicegroups                   amb_temp
+        service_description             Ambient Temperature
+        # The "$HOSTNAME$ X Y" is 1 argument for command, but actually simulates 3 of them
+        check_command                   check-nrpe!check_amb_temp!"$HOSTNAME$ 25 27" -t 60
+        }
+
+

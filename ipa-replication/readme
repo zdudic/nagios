@@ -1,0 +1,12 @@
+This plugin check replication between FreeIPA servers. 
+This first release is only for RH/OL/CentOS version 7. 
+And the plugin required password of Directory Manager, 
+hence what I suggest is to download this shell script, 
+and enter the password in the "ipa_passwd" variable. 
+One idea of hiding a password in a shell script is to 
+use 'shc' tool which will convert a shell script into executable binary.
+The plugin runs on a FreeIPA server, hence it's called by NRPE. 
+
+
+ref:
+https://exchange.nagios.org/directory/Plugins/Others/Check-FreeIPA-replication/details

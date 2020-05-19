@@ -1,0 +1,5 @@
+Here is the Nagios plugin for checking Samba authentication, for SOLARIS.
+
+If everything okay, the Nagios reports something like:
+OK Authentication successful on Domain=[MYDOMAIN] OS=[Unix] Server=[Samba 3.5.8]
+

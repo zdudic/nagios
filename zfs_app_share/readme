@@ -1,0 +1,69 @@
+Intro
+-------
+This is Nagios plugin to query directly a ZFS appliance and check a share usage, 
+instead of query some host and check usage of a NFS mount.
+
+User
+-----
+
+Traditionally, Nagios uses a client (nrpe) to monitor local services (like disk usage check). 
+In this case, there is no nrpe for ZFS appliance, so Nagios will have to SSH into the appliance and do the work, 
+hence 'nagios' user need to be present on ZFS appliance.
+Create new read-only role for this account and add SSH public key for nagios user.
+ex:
+(zfs app): configuration users nagios> show
+
+Properties:
+                      logname = nagios
+                          type = local
+                           uid = 2000000000
+                      fullname = nagios
+              initial_password = *************
+            require_annotation = false
+                         roles = ro
+                    kiosk_mode = false
+                  kiosk_screen = status/dashboard
+ 
+
+(zfs app):configuration users nagios preferences keys> show
+
+Keys:
+NAME     MODIFIED              TYPE   COMMENT
+key-000  2015-3-2 17:51:31     RSA    nagios_rsa_public_key
+
+Plugin
+------
+
+Maybe your Nagios plugins are installed in the directory /usr/lib/nagios/plugins 
+and this one can be named check_share_space_zfs_appliance.ksh
+The plugin requires six arguments: zfsapp pool project share war_free_% crit_free_%
+
+
+Graph, pnp4nagios
+-------------------
+
+The pnp4nagios template can be /usr/share/pnp4nagios/templates/check_zfsappliance_share_usage.php
+
+
+Add new share for monitoring
+-----------------------------
+
+Nagios command is:
+
+# check usage of ZFS Appliance shares
+define command{
+   command_name check_zfsappliance_share_usage
+   command_line $USER1$/check_share_space_zfs_appliance.ksh $ARG1$ $ARG2$ $ARG3$ $ARG4$ $ARG5$ $ARG6$
+   }
+
+Add new service to Nagios, ex.
+
+define service{
+    use                     generic-service,srv-pnp
+    host_name               zfs-appliance-hostname
+    service_description     Disk usage pool-name/project/share-name
+    check_command           check_zfsappliance_share_usage!$HOSTADDRESS$!pool-name!project!share-name!20!10
+    normal_check_interval   15
+        }
+
+

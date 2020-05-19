@@ -1,0 +1,28 @@
+---------------------
+INTRO
+---------------------
+Here is the plug-in that monitors/reports if anything interesting is found by Solaris Fault Manager.
+
+---------------------
+MACHINE TO CHECK
+--------------------
+
+You need this line in your nrpe.cfg file on machine whose FM messages you want to know, it has lines:
+
+command[check_fmd_output]=/your-path/check_fmd_output.sh
+
+
+----------------------------
+NAGIOS SERVER
+--------------------------
+
+Nagios server needs defined service, something like:
+
+define service{
+        use                             gen-service         
+        hostgroup_name                  SUN
+        service_description             Solaris Fault Manager
+        servicegroups                   Solaris_Fault_Manager
+        check_command                   check-nrpe!check_fmd_output
+        }
+
